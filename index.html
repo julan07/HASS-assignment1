@@ -1,102 +1,113 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pollutant Standards Index (PSI) Readings in Singapore</title>
-    <style>
-        body {
-            background-color: palegreen;
-            text-align: center;
-            color: darkblue;
-        }
+<title>Assignment 1</title>
+<style>
+.header{
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    color: darkblue;
+    border-bottom: 1px dotted darkolivegreen;
+    border-top: 1px dotted darkolivegreen;
+}
 
-        h1 {
-            color: darkblue;
-        }
+#timestring{
+    font-size:20px;
+    color: slateblue;
+}
 
-        h2 {
-            font-size: smaller;
-            color: darkblue;
-        }
-
-        img {
-            max-width: 100px;
-        }
-
-        table {
-            margin: 20px auto;
-            border-collapse: collapse;
-            width: 80%;
-        }
-
-        th, td {
-            border: 1px solid darkblue;
-            padding: 8px;
-            text-align: center;
-        }
-
-        #submittedBy {
-            margin-top: 20px;
-            font-style: italic;
-            color: darkblue;
-        }
-    </style>
-</head>
-<body>
-
-<h1>Pollutant Standards Index (PSI) Readings in Singapore</h1>
-
-<h2>Data sets from the National Environment Agency (NEA)</h2>
-<a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
-
-<table>
-    <thead>
-        <tr>
-            <th>Timestamp</th>
-            <th>O3 Sub Index</th>
-            <th>PM10 Twenty Four Hourly</th>
-            <th>PM10 Sub Index</th>
-            <th>PM25 Twenty Four Hourly</th>
-            <th>PM25 Sub Index</th>
-            <th>SO2 Sub Index</th>
-            <th>CO Eight Hour Max</th>
-            <th>NO2 One Hour Max</th>
-            <th>SO2 Twenty Four Hourly</th>
-            <th>CO Sub Index</th>
-            <th>PSI Twenty Four Hourly</th>
-        </tr>
-    </thead>
-    <tbody id="psiData"></tbody>
-</table>
-
-<div id="submittedBy">Submitted by Julan Donio Castro</div>
-
-<script>
-    // Function to fetch PSI data and update the table
-    async function fetchPSIData() {
-        try {
-            const response = await fetch('https://api.data.gov.sg/v1/environment/psi');
-            const data = await response.json();
-
-            // Extract readings
-            const readings = data.items[0].readings;
-
-            // Display readings in the table
-            const psiDataElement = document.getElementById('psiData');
-            psiDataElement.innerHTML = '';
-
-            Object.entries(readings).forEach(([key, value]) => {
-                psiDataElement.innerHTML += `<tr><td>${key}</td><td>${value}</td></tr>`;
-            });
-        } catch (error) {
-            console.error('Error fetching PSI data:', error);
-        }
+body {
+    background-color: palegreen;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 25px;
     }
 
-    // Fetch PSI data on page load
-    fetchPSIData();
-</script>
+#source-link:visited{
+    color:purple;
+}
+#source-link:hover{
+    color: red;
+}
 
+table, th, td{
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid brown;
+    padding: 10px;
+    width: 80%;
+    font-size: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+</style>
+</head>
+<body>
+<div>
+    <h2 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore </h2>
+    <h2>Data sets from the National Environment Agency (NEA)</h2>
+<a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
+    <p>Data extracted from <a id="sourcelink" href="https://data.gov.sg/dataset/psi" target="_blank"> Data.gov.sg </p>
+    <h3 id="timestring"></h3>
+</div>
+
+<table id="PSItable">
+    <tr>
+        <th>Metric</th>
+        <th>National</th>
+        <th>Central</th>
+        <th>West</th>
+        <th>East</th>
+        <th>North</th>
+        <th>South</th>
+    </tr>
+</table>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+
+ /* to make a function that adds data to tables*/
+ var tableadd = (datapt, rownum) => {
+    var td = document.createElement('td')
+    td.textContent = datapt
+    rownum.appendChild(td)
+    }
+
+fetch('https://api.data.gov.sg/v1/environment/psi')
+  .then(response => response.json())
+  .then(data => {
+    /* to get readings*/
+    var table = document.querySelector('#PSItable')
+    var read = data.items[0].readings
+    let timestamp = data.items[0].update_timestamp;
+    $("#timestring").text(timestamp);
+    
+    /* for loop to put in rows in table*/
+    for (var data in read) {
+        var trow = document.createElement('tr')
+        table.appendChild(trow)
+
+        tableadd(data, trow)
+
+        for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
+            tableadd(read[data][field], trow)
+    }
+   
+  
+  });
+  
+    let timestamp = data.items[0].update_timestamp;
+    let readings = data.items[0].readings;
+    console.log(timestamp);
+    console.log(readings);
+    
+    $("#timestring").text(timestamp);
+
+
+</script>
 </body>
 </html>
