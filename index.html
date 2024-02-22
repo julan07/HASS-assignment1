@@ -4,20 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pollutant Standards Index (PSI) Readings in Singapore</title>
-    
     <style>
         body {
-            background-color: green;
+            background-color: palegreen;
+            text-align: center;
+            color: darkblue;
         }
 
         h1 {
-            text-align: center;
-            color: blue;
+            color: darkblue;
         }
 
-        p {
-            text-align: center;
+        h2 {
             font-size: smaller;
+            color: darkblue;
+        }
+
+        img {
+            max-width: 100px;
+        }
+
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 80%;
+        }
+
+        th, td {
+            border: 1px solid darkblue;
+            padding: 8px;
+            text-align: center;
+        }
+
+        #submittedBy {
+            margin-top: 20px;
+            font-style: italic;
+            color: darkblue;
         }
     </style>
 </head>
@@ -25,15 +47,10 @@
 
 <h1>Pollutant Standards Index (PSI) Readings in Singapore</h1>
 
-<p>
-    Data sets from the National Environment Agency (NEA)
-    <br>
-    <a href="https://www.nea.gov.sg/" target="_blank">
-        <img src="nea_logo.png" alt="NEA Logo" style="max-width: 100px;">
-    </a>
-</p>
+<h2>Data sets from the National Environment Agency (NEA)</h2>
+<a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo"></a>
 
-<table border="1">
+<table>
     <thead>
         <tr>
             <th>Timestamp</th>
@@ -52,6 +69,8 @@
     </thead>
     <tbody id="psiData"></tbody>
 </table>
+
+<div id="submittedBy">Submitted by Julan Donio Castro</div>
 
 <script>
     // Function to fetch PSI data and update the table
@@ -78,10 +97,6 @@
     // Fetch PSI data on page load
     fetchPSIData();
 </script>
-
-<p style="text-align: center;">
-    Submitted by Julan Donio Castro
-</p>
 
 </body>
 </html>
