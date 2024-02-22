@@ -1,63 +1,70 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<title>Assignment 1</title>
-<style>
-.header{
-    font-weight: bold;
-    font-size: 50px;
-    text-align: center;
-    color: darkblue;
-    border-bottom: 1px dotted darkolivegreen;
-    border-top: 1px dotted darkolivegreen;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment 1</title>
+    <style>
+        .header {
+            font-weight: bold;
+            font-size: 40px; /* Adjusted for a slightly smaller size */
+            text-align: center;
+            color: darkblue;
+            border-bottom: 1px solid darkolivegreen;
+            border-top: 1px solid darkolivegreen;
+        }
 
-#timestring{
-    font-size:20px;
-    color: slateblue;
-}
+        #timestring {
+            font-size: 20px;
+            color: slateblue;
+        }
 
-body {
-    background-color: palegreen;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    padding: 25px;
-    }
+        body {
+            background-color: palegreen;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            padding: 25px;
+        }
 
-#source-link:visited{
-    color:purple;
-}
-#source-link:hover{
-    color: red;
-}
+        #source-link:visited {
+            color: purple;
+        }
+        #source-link:hover {
+            color: red;
+        }
 
-table, th, td{
-    vertical-align: middle;
-    text-align: center;
-    border: 1px solid brown;
-    padding: 10px;
-    width: 80%;
-    font-size: 20px;
-    margin-left: auto;
-    margin-right: auto;
+        table, th, td {
+            border-collapse: collapse; /* Added for simplicity */
+            border: 1px solid brown;
+            padding: 5px; /* Adjusted for simplicity */
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-}
+        table {
+            width: 70%; /* Adjusted width for simplicity */
+            font-size: 18px; /* Adjusted for simplicity */
+        }
 
-</style>
+        footer {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 <div>
-    <h2 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore </h2>
-    <h2>Data sets from the National Environment Agency (NEA)</h2>
-<a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
-    <p>Data extracted from <a id="sourcelink" href="https://data.gov.sg/dataset/psi" target="_blank"> Data.gov.sg </p>
-    <h3 id="timestring"></h3>
+    <h2 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore</h2>
+    <h3>Data sets from the National Environment Agency (NEA)</h3>
+    <a href="https://www.nea.gov.sg">
+        <img src="nea_logo.png" alt="NEA Logo" style="width: 100px;"> <!-- Adjusted for a fixed width -->
+    </a>
+    <p>Data extracted from <a id="source-link" href="https://data.gov.sg/dataset/psi" target="_blank">Data.gov.sg</a></p>
+    <p id="timestring"></p>
 </div>
 
 <table id="PSItable">
     <tr>
         <th>Metric</th>
-        <th>National</th>
         <th>Central</th>
         <th>West</th>
         <th>East</th>
@@ -66,48 +73,24 @@ table, th, td{
     </tr>
 </table>
 
+<footer>
+    <p>Submitted by: Julan Donio Castro</p>
+</footer>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
+    fetch('https://api.data.gov.sg/v1/environment/psi')
+    .then(response => response.json())
+    .then(data => {
+        const table = document.querySelector('#PSItable');
+        const readings = data.items[0].readings;
+        const timestamp = new Date(data.items[0].update_timestamp).toLocaleString();
 
+        // Update timestamp
+        $("#timestring").text(`Last Updated: ${timestamp}`);
 
- /* to make a function that adds data to tables*/
- var tableadd = (datapt, rownum) => {
-    var td = document.createElement('td')
-    td.textContent = datapt
-    rownum.appendChild(td)
-    }
-
-fetch('https://api.data.gov.sg/v1/environment/psi')
-  .then(response => response.json())
-  .then(data => {
-    /* to get readings*/
-    var table = document.querySelector('#PSItable')
-    var read = data.items[0].readings
-    let timestamp = data.items[0].update_timestamp;
-    $("#timestring").text(timestamp);
-    
-    /* for loop to put in rows in table*/
-    for (var data in read) {
-        var trow = document.createElement('tr')
-        table.appendChild(trow)
-
-        tableadd(data, trow)
-
-        for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
-            tableadd(read[data][field], trow)
-    }
-   
-  
-  });
-  
-    let timestamp = data.items[0].update_timestamp;
-    let readings = data.items[0].readings;
-    console.log(timestamp);
-    console.log(readings);
-    
-    $("#timestring").text(timestamp);
-
-
-</script>
-</body>
-</html>
+        // Iterate through each reading and append to table, excluding 'national'
+        for (let key in readings) {
+            const row = table.insertRow(-1); // Insert a row at the end of table
+            const metricCell = row.insertCell(0); // Insert a cell for the metric name at the start of the row
+            metricCell.textContent = key.replace
