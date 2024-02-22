@@ -1,57 +1,59 @@
+
+
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assignment 1</title>
-    <style>
-        .header {
-            font-weight: bold;
-            font-size: 50px;
-            text-align: center;
-            color: darkblue;
-            border-bottom: 1px dotted darkolivegreen;
-            border-top: 1px dotted darkolivegreen;
-        }
+<title>Assignment 1</title>
+<style>
+.header{
+    font-weight: bold;
+    font-size: 50px;
+    text-align: center;
+    color: darkblue;
+    border-bottom: 1px dotted darkolivegreen;
+    border-top: 1px dotted darkolivegreen;
+}
 
-        #timestring {
-            font-size: 20px;
-            color: slateblue;
-        }
+#timestring{
+    font-size:20px;
+    color: slateblue;
+}
 
-        body {
-            background-color: palegreen;
-            font-family: Arial, Helvetica, sans-serif;
-            text-align: center;
-            padding: 25px;
-        }
+body {
+    background-color: palegreen;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding: 25px;
+    }
 
-        #source-link:visited {
-            color: purple;
-        }
-        #source-link:hover {
-            color: red;
-        }
+#source-link:visited{
+    color:purple;
+}
+#source-link:hover{
+    color: red;
+}
 
-        table, th, td {
-            border: 1px solid brown;
-            padding: 10px;
-            width: 80%;
-            font-size: 20px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
+table, th, td{
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid brown;
+    padding: 10px;
+    width: 80%;
+    font-size: 20px;
+    margin-left: auto;
+    margin-right: auto;
+
+}
+
+</style>
 </head>
 <body>
 <div>
-    <h2 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore</h2>
-    <h2>Data sets from the National Environment Agency (NEA)</h2>
-    <a href="https://www.nea.gov.sg">
-        <img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
-    </a>
-    <p>Data extracted from <a id="source-link" href="https://data.gov.sg/dataset/psi" target="_blank">Data.gov.sg</a></p>
-    <h3 id="timestring"></h3>
+    <h2 class="header">Live Readings of Pollutant Standard Index (PSI) in Singapore </h2>
+    <h2> Data sets from the National Environment Agency (NEA)</h2>
+<a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
+    <h3> <p>Data extracted from <a id="sourcelink" href="https://data.gov.sg/dataset/psi" target="_blank"> Data.gov.sg </p>
+    <h4 id="timestring"></h4>
 </div>
 
 <table id="PSItable">
@@ -66,32 +68,51 @@
     </tr>
 </table>
 
+<div id="submittedBy">Submitted by Julan Donio Castro</div>        
+        
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    fetch('https://api.data.gov.sg/v1/environment/psi')
-    .then(response => response.json())
-    .then(data => {
-        const table = document.querySelector('#PSItable');
-        const readings = data.items[0].readings;
-        const timestamp = new Date(data.items[0].update_timestamp).toLocaleString();
 
-        // Update timestamp
-        $("#timestring").text(`Last Updated: ${timestamp}`);
 
-        // Iterate through each reading and append to table
-        for (let key in readings) {
-            const row = table.insertRow(-1); // Insert a row at the end of table
-            const metricCell = row.insertCell(0); // Insert a cell for the metric name at the start of the row
-            metricCell.textContent = key.replace(/_/g, ' ').toUpperCase();
+ /* to make a function that adds data to tables*/
+ var tableadd = (datapt, rownum) => {
+    var td = document.createElement('td')
+    td.textContent = datapt
+    rownum.appendChild(td)
+    }
 
-            // Append each regional value
-            ['national', 'central', 'west', 'east', 'north', 'south'].forEach(region => {
-                const cell = row.insertCell(-1); // Insert new cell
-                cell.textContent = readings[key][region];
-            });
-        }
-    })
-    .catch(error => console.error('Error fetching PSI data:', error));
+fetch('https://api.data.gov.sg/v1/environment/psi')
+  .then(response => response.json())
+  .then(data => {
+    /* to get readings*/
+    var table = document.querySelector('#PSItable')
+    var read = data.items[0].readings
+    let timestamp = data.items[0].update_timestamp;
+    $("#timestring").text(timestamp);
+    
+    /* for loop to put in rows in table*/
+    for (var data in read) {
+        var trow = document.createElement('tr')
+        table.appendChild(trow)
+
+        tableadd(data, trow)
+
+        for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
+            tableadd(read[data][field], trow)
+    }
+   
+  
+  });
+  
+    let timestamp = data.items[0].update_timestamp;
+    let readings = data.items[0].readings;
+    console.log(timestamp);
+    console.log(readings);
+    
+    $("#timestring").text(timestamp);
+  
+
+
 </script>
 </body>
 </html>
