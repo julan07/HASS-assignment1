@@ -48,10 +48,9 @@ table, th, td{
 <body>
 <div>
     <h2 class="header">Live Pollutant Standard Index (PSI) in Singapore </h2>
-    <h2>Data sets from the National Environment Agency (NEA)</h2>
+    <h2>Data sets from the National Environment Agency (NEA) as extracted from <a id="sourcelink" href="https://data.gov.sg/dataset/psi" target="_blank"> Data.gov.sg </h2>
         <a href="https://www.nea.gov.sg"><img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
-    <h3><p>Data extracted from <a id="sourcelink" href="https://data.gov.sg/dataset/psi" target="_blank"> Data.gov.sg </p> </h3>
-    <h4 id="timestring"></h4>
+    <h3 id="timestring"></h3>
 </div>
 
 <table id="PSItable">
@@ -109,8 +108,6 @@ fetch('https://api.data.gov.sg/v1/environment/psi')
     
     $("#timestring").text(timestamp);
   
-
-
 </script>
 </body>
 </html>
