@@ -1,11 +1,13 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assignment 1</title>
     <style>
         .header {
             font-weight: bold;
-            font-size: 40px;
+            font-size: 50px;
             text-align: center;
             color: darkblue;
             border-bottom: 1px dotted darkolivegreen;
@@ -27,7 +29,6 @@
         #source-link:visited {
             color: purple;
         }
-
         #source-link:hover {
             color: red;
         }
@@ -36,59 +37,61 @@
             border: 1px solid brown;
             padding: 10px;
             width: 80%;
+            font-size: 20px;
             margin-left: auto;
             margin-right: auto;
-            font-size: 20px;
         }
     </style>
 </head>
 <body>
-    <div>
-        <h1 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore</h1>
-        <h2>Data sets from the National Environment Agency (NEA)</h2>
-        <a href="https://www.nea.gov.sg">
-            <img src="nea_logo.png" alt="NEA Logo" style="width: 100px;">
-        </a>
-        <p>Data extracted from <a id="source-link" href="https://data.gov.sg/dataset/psi" target="_blank">Data.gov.sg</a></p>
-        <h3 id="timestring"></h3>
-    </div>
+<div>
+    <h2 class="header">Pollutant Standard Index (PSI) Live Readings in Singapore</h2>
+    <h2>Data sets from the National Environment Agency (NEA)</h2>
+    <a href="https://www.nea.gov.sg">
+        <img src="nea_logo.png" alt="NEA Logo" style="width: 8%;">
+    </a>
+    <p>Data extracted from <a id="source-link" href="https://data.gov.sg/dataset/psi" target="_blank">Data.gov.sg</a></p>
+    <h3 id="timestring"></h3>
+</div>
 
-    <table id="PSItable">
-        <tr>
-            <th>Metric</th>
-            <th>Central</th>
-            <th>West</th>
-            <th>East</th>
-            <th>North</th>
-            <th>South</th>
-        </tr>
-    </table>
+<table id="PSItable">
+    <tr>
+        <th>Metric</th>
+        <th>National</th>
+        <th>Central</th>
+        <th>West</th>
+        <th>East</th>
+        <th>North</th>
+        <th>South</th>
+    </tr>
+</table>
 
-    <p>Submitted by: Julan Donio Castro</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    fetch('https://api.data.gov.sg/v1/environment/psi')
+    .then(response => response.json())
+    .then(data => {
+        const table = document.querySelector('#PSItable');
+        const readings = data.items[0].readings;
+        const timestamp = new Date(data.items[0].update_timestamp).toLocaleString();
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        fetch('https://api.data.gov.sg/v1/environment/psi')
-        .then(response => response.json())
-        .then(data => {
-            var table = document.querySelector('#PSItable');
-            var read = data.items[0].readings;
-            let timestamp = data.items[0].update_timestamp;
-            $("#timestring").text("Last Updated: " + timestamp);
-            
-            for (var dataPoint in read.psi_twenty_four_hourly) {
-                var row = table.insertRow(-1);
-                var cell1 = row.insertCell(0);
-                cell1.textContent = dataPoint.charAt(0).toUpperCase() + dataPoint.slice(1);
-                
-                var regions = ['central', 'west', 'east', 'north', 'south'];
-                regions.forEach(region => {
-                    var cell = row.insertCell();
-                    cell.textContent = read.psi_twenty_four_hourly[region];
-                });
-            }
-        })
-        .catch(error => console.error('Error fetching PSI data:', error));
-    </script>
+        // Update timestamp
+        $("#timestring").text(`Last Updated: ${timestamp}`);
+
+        // Iterate through each reading and append to table
+        for (let key in readings) {
+            const row = table.insertRow(-1); // Insert a row at the end of table
+            const metricCell = row.insertCell(0); // Insert a cell for the metric name at the start of the row
+            metricCell.textContent = key.replace(/_/g, ' ').toUpperCase();
+
+            // Append each regional value
+            ['national', 'central', 'west', 'east', 'north', 'south'].forEach(region => {
+                const cell = row.insertCell(-1); // Insert new cell
+                cell.textContent = readings[key][region];
+            });
+        }
+    })
+    .catch(error => console.error('Error fetching PSI data:', error));
+</script>
 </body>
 </html>
