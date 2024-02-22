@@ -94,7 +94,7 @@ fetch('https://api.data.gov.sg/v1/environment/psi')
 
         tableadd(data, trow)
 
-        for (var field of ['national', 'central', 'west', 'east', 'north', 'south'])
+        for (var field of ['central', 'west', 'east', 'north', 'south'])
             tableadd(read[data][field], trow)
     }
    
